@@ -2,11 +2,11 @@ package genericPackage;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
-
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Reporter;
 import org.testng.annotations.AfterMethod;
@@ -16,6 +16,7 @@ import com.google.common.io.Files;
 
 public class BaseTest implements IAutoConstant{
 	protected static WebDriver driver;
+	
 	@BeforeMethod 
 	public void setUp() throws IOException
 	{
@@ -25,7 +26,11 @@ public class BaseTest implements IAutoConstant{
 		if(browserValue.equals("chrome"))
 		{
 			System.setProperty(CHROME_KEY, CHROME_VALUE);
-			driver=new ChromeDriver();
+			ChromeOptions options=new ChromeOptions();
+			options.addArguments("--remote-allow-origins=*");
+			WebDriver driver=new ChromeDriver(options);
+			driver.manage().deleteAllCookies();
+
 			driver.manage().window().maximize();
 			driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
 			driver.get(url);
